@@ -1,99 +1,90 @@
-import { useState, useEffect } from "react";
-import { quizQuestions } from "@/data/sampleData";
+import { useEffect } from "react";
 import { QuizStart } from "@/components/quiz/QuizStart";
 import { QuizTaking } from "@/components/quiz/QuizTaking";
 import { QuizResults } from "@/components/quiz/QuizResults";
+import { QuizNavigation } from "@/components/quiz/QuizNavigation";
+import { quizQuestions } from "@/data/sampleData";
+import { useQuiz } from "@/contexts/QuizContext";
 
-type QuizState = 'started' | 'taking' | 'completed';
-type Answer = {
-  questionId: number;
-  selectedAnswer: number;
-  isCorrect: boolean;
-};
+type QuizStage = 'start' | 'taking' | 'results';
 
 const GateQuiz = () => {
-  const [quizState, setQuizState] = useState<QuizState>('started');
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<Answer[]>([]);
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-  const [timeLeft, setTimeLeft] = useState(600);
+  const { quizState, startQuiz, selectAnswer, nextQuestion, previousQuestion, submitQuiz, resetQuiz } = useQuiz();
+
+  const stage: QuizStage = !quizState ? 'start' : quizState.isCompleted ? 'results' : 'taking';
 
   useEffect(() => {
-    if (quizState === 'taking' && timeLeft > 0) {
-      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
-      return () => clearTimeout(timer);
-    } else if (timeLeft === 0 && quizState === 'taking') {
-      handleSubmitQuiz();
+    if (quizState?.isCompleted) {
+      // Quiz completed
     }
-  }, [timeLeft, quizState]);
+  }, [quizState?.isCompleted]);
 
-  const handleStartQuiz = () => {
-    setQuizState('taking');
-    setTimeLeft(600);
+  const handleStart = () => {
+    startQuiz('gate', 'full', quizQuestions.length, 10);
   };
 
   const handleAnswerSelect = (answerIndex: number) => {
-    setSelectedAnswer(answerIndex);
-  };
-
-  const handleNextQuestion = () => {
-    if (selectedAnswer !== null) {
-      const isCorrect = selectedAnswer === quizQuestions[currentQuestion].correctAnswer;
-      const newAnswer: Answer = {
-        questionId: quizQuestions[currentQuestion].id,
-        selectedAnswer,
-        isCorrect
-      };
-
-      setAnswers([...answers, newAnswer]);
-      
-      if (currentQuestion < quizQuestions.length - 1) {
-        setCurrentQuestion(currentQuestion + 1);
-        setSelectedAnswer(null);
-      } else {
-        handleSubmitQuiz();
-      }
+    if (quizState) {
+      selectAnswer(quizState.currentQuestion, answerIndex);
     }
   };
 
-  const handlePreviousQuestion = () => {
-    if (currentQuestion > 0) {
-      setCurrentQuestion(currentQuestion - 1);
-      const previousAnswer = answers[currentQuestion - 1];
-      setSelectedAnswer(previousAnswer?.selectedAnswer ?? null);
+  const handleNext = () => {
+    if (quizState && quizState.currentQuestion < quizQuestions.length - 1) {
+      nextQuestion();
+    } else {
+      handleSubmit();
     }
   };
 
-  const handleSubmitQuiz = () => {
-    setQuizState('completed');
+  const handlePrevious = () => {
+    previousQuestion();
   };
 
-  const handleRestartQuiz = () => {
-    setQuizState('started');
-    setCurrentQuestion(0);
-    setAnswers([]);
-    setSelectedAnswer(null);
-    setTimeLeft(600);
+  const handleSubmit = () => {
+    submitQuiz();
   };
 
-  if (quizState === 'started') {
-    return <QuizStart onStart={handleStartQuiz} />;
+  const handleRestart = () => {
+    resetQuiz();
+  };
+
+  if (stage === 'start') {
+    return <QuizStart onStart={handleStart} />;
   }
 
-  if (quizState === 'taking') {
-    return (
-      <QuizTaking
-        currentQuestion={currentQuestion}
-        selectedAnswer={selectedAnswer}
-        timeLeft={timeLeft}
-        onAnswerSelect={handleAnswerSelect}
-        onNext={handleNextQuestion}
-        onPrevious={handlePreviousQuestion}
-      />
-    );
+  if (stage === 'results' && quizState) {
+    const answers = quizState.answers.map((ans, idx) => ({
+      questionId: idx,
+      selectedAnswer: ans.selectedAnswer ?? -1,
+      isCorrect: ans.selectedAnswer === quizQuestions[idx].correctAnswer
+    }));
+    return <QuizResults answers={answers} onRestart={handleRestart} />;
   }
 
-  return <QuizResults answers={answers} onRestart={handleRestartQuiz} />;
+  if (!quizState) return null;
+
+  return (
+    <div className="min-h-screen bg-background pt-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid lg:grid-cols-4 gap-6">
+          <div className="lg:col-span-3">
+            <QuizTaking
+              currentQuestion={quizState.currentQuestion}
+              selectedAnswer={quizState.answers[quizState.currentQuestion].selectedAnswer}
+              timeLeft={quizState.timeLeft}
+              onAnswerSelect={handleAnswerSelect}
+              onNext={handleNext}
+              onPrevious={handlePrevious}
+            />
+          </div>
+          <div className="lg:col-span-1">
+            <QuizNavigation />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default GateQuiz;

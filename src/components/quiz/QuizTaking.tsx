@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Clock, ArrowLeft, ArrowRight, BookOpen } from "lucide-react";
+import { Clock, ArrowLeft, ArrowRight, BookOpen, Flag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { quizQuestions } from "@/data/sampleData";
+import { useQuiz } from "@/contexts/QuizContext";
 
 interface QuizTakingProps {
   currentQuestion: number;
@@ -26,8 +27,10 @@ export const QuizTaking = ({
   onPrevious
 }: QuizTakingProps) => {
   const [showExplanation, setShowExplanation] = useState(false);
+  const { quizState, markForReview } = useQuiz();
   const question = quizQuestions[currentQuestion];
   const progress = ((currentQuestion + 1) / quizQuestions.length) * 100;
+  const isMarked = quizState?.answers[currentQuestion]?.markedForReview || false;
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -36,21 +39,20 @@ export const QuizTaking = ({
   };
 
   return (
-    <div className="min-h-screen bg-background pt-20">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Quiz Header */}
-        <div className="mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <Badge variant="outline">
-              Question {currentQuestion + 1} of {quizQuestions.length}
-            </Badge>
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Clock className="w-4 h-4" />
-              <span className="font-mono text-lg">{formatTime(timeLeft)}</span>
-            </div>
+    <div>
+      {/* Quiz Header */}
+      <div className="mb-8">
+        <div className="flex justify-between items-center mb-4">
+          <Badge variant="outline">
+            Question {currentQuestion + 1} of {quizQuestions.length}
+          </Badge>
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <Clock className="w-4 h-4" />
+            <span className="font-mono text-lg">{formatTime(timeLeft)}</span>
           </div>
-          <Progress value={progress} className="h-2" />
         </div>
+        <Progress value={progress} className="h-2" />
+      </div>
 
         {/* Question Card */}
         <Card className="border-0 shadow-medium mb-8">
@@ -107,26 +109,33 @@ export const QuizTaking = ({
           </CardContent>
         </Card>
 
-        {/* Navigation */}
-        <div className="flex justify-between">
-          <Button 
-            variant="outline" 
-            onClick={onPrevious}
-            disabled={currentQuestion === 0}
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Previous
-          </Button>
-          
-          <Button 
-            onClick={onNext}
-            disabled={selectedAnswer === null}
-            variant={currentQuestion === quizQuestions.length - 1 ? "hero" : "default"}
-          >
-            {currentQuestion === quizQuestions.length - 1 ? 'Submit Quiz' : 'Next Question'}
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
-        </div>
+      {/* Navigation */}
+      <div className="flex justify-between items-center">
+        <Button 
+          variant="outline" 
+          onClick={onPrevious}
+          disabled={currentQuestion === 0}
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Previous
+        </Button>
+
+        <Button
+          variant={isMarked ? "warning" : "outline"}
+          onClick={() => markForReview(currentQuestion)}
+        >
+          <Flag className="mr-2 h-4 w-4" />
+          {isMarked ? "Unmark" : "Mark for Review"}
+        </Button>
+        
+        <Button 
+          onClick={onNext}
+          disabled={selectedAnswer === null}
+          variant={currentQuestion === quizQuestions.length - 1 ? "hero" : "default"}
+        >
+          {currentQuestion === quizQuestions.length - 1 ? 'Submit Quiz' : 'Next Question'}
+          <ArrowRight className="ml-2 h-4 w-4" />
+        </Button>
       </div>
     </div>
   );

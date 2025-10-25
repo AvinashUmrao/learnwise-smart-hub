@@ -2,9 +2,12 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, BookOpen, Users, Award, Search } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, logout } = useAuth();
   const location = useLocation();
 
   const navigation = [
@@ -49,9 +52,21 @@ const Navbar = () => {
                 </Link>
               );
             })}
-            <Button variant="hero" size="sm">
-              Get Started
-            </Button>
+            <ThemeToggle />
+            {user ? (
+              <>
+                <span className="text-sm text-muted-foreground">
+                  {user.name}
+                </span>
+                <Button variant="outline" size="sm" onClick={logout}>
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <Button variant="hero" size="sm">
+                Get Started
+              </Button>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -90,10 +105,22 @@ const Navbar = () => {
                 </Link>
               );
             })}
-            <div className="px-3 py-2">
-              <Button variant="hero" size="sm" className="w-full">
-                Get Started
-              </Button>
+            <div className="px-3 py-2 space-y-2">
+              <ThemeToggle />
+              {user ? (
+                <>
+                  <div className="text-sm text-muted-foreground px-3">
+                    Logged in as {user.name}
+                  </div>
+                  <Button variant="outline" size="sm" className="w-full" onClick={logout}>
+                    Logout
+                  </Button>
+                </>
+              ) : (
+                <Button variant="hero" size="sm" className="w-full">
+                  Get Started
+                </Button>
+              )}
             </div>
           </div>
         </div>
