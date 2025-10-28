@@ -63,9 +63,11 @@ const Navbar = () => {
                 </Button>
               </>
             ) : (
-              <Button variant="hero" size="sm">
-                Get Started
-              </Button>
+              <Link to="/auth">
+                <Button variant="hero" size="sm">
+                  Get Started
+                </Button>
+              </Link>
             )}
           </div>
 
@@ -117,9 +119,11 @@ const Navbar = () => {
                   </Button>
                 </>
               ) : (
-                <Button variant="hero" size="sm" className="w-full">
-                  Get Started
-                </Button>
+                <Link to="/auth">
+                  <Button variant="hero" size="sm" className="w-full">
+                    Get Started
+                  </Button>
+                </Link>
               )}
             </div>
           </div>

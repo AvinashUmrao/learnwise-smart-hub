@@ -19,8 +19,8 @@ const GateQuiz = () => {
     }
   }, [quizState?.isCompleted]);
 
-  const handleStart = () => {
-    startQuiz('gate', 'full', quizQuestions.length, 10);
+  const handleStart = (quizType: 'topic' | 'subject' | 'full', duration: number) => {
+    startQuiz('gate', quizType, quizQuestions.length, duration);
   };
 
   const handleAnswerSelect = (answerIndex: number) => {

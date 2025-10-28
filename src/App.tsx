@@ -14,6 +14,7 @@ import Gate from "./pages/Gate";
 import GateQuiz from "./pages/GateQuiz";
 import PlagueCheck from "./pages/PlagueCheck";
 import Blogs from "./pages/Blogs";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +38,7 @@ const App = () => (
                     <Route path="/gate/quiz" element={<GateQuiz />} />
                     <Route path="/plague-check" element={<PlagueCheck />} />
                     <Route path="/blogs" element={<Blogs />} />
+                    <Route path="/auth" element={<Auth />} />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />
                   </Routes>
