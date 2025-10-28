@@ -12,6 +12,10 @@ import Home from "./pages/Home";
 import ExamPrep from "./pages/ExamPrep";
 import Gate from "./pages/Gate";
 import GateQuiz from "./pages/GateQuiz";
+import Jee from "./pages/Jee";
+import Cat from "./pages/Cat";
+import Neet from "./pages/Neet";
+import Upsc from "./pages/Upsc";
 import PlagueCheck from "./pages/PlagueCheck";
 import Blogs from "./pages/Blogs";
 import Auth from "./pages/Auth";
@@ -36,6 +40,10 @@ const App = () => (
                     <Route path="/exam-prep" element={<ExamPrep />} />
                     <Route path="/gate" element={<Gate />} />
                     <Route path="/gate/quiz" element={<GateQuiz />} />
+                    <Route path="/jee" element={<Jee />} />
+                    <Route path="/cat" element={<Cat />} />
+                    <Route path="/neet" element={<Neet />} />
+                    <Route path="/upsc" element={<Upsc />} />
                     <Route path="/plague-check" element={<PlagueCheck />} />
                     <Route path="/blogs" element={<Blogs />} />
                     <Route path="/auth" element={<Auth />} />

@@ -22,7 +22,9 @@ export const NewsSection = () => {
         <div className="grid md:grid-cols-3 gap-8">
           {newsData.map((news) => (
             <Card key={news.id} className="overflow-hidden border-0 shadow-soft hover:shadow-medium transition-all duration-300">
-              <div className="aspect-video bg-gradient-card"></div>
+              <div className="aspect-video overflow-hidden">
+                <img src={news.image} alt={news.title} className="w-full h-full object-cover" />
+              </div>
               <CardHeader>
                 <div className="flex items-center justify-between mb-2">
                   <Badge variant="secondary">{news.category}</Badge>

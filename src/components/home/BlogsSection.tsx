@@ -25,7 +25,9 @@ export const BlogsSection = () => {
         <div className="grid md:grid-cols-3 gap-8">
           {blogData.map((blog) => (
             <Card key={blog.id} className="overflow-hidden border-0 shadow-soft hover:shadow-medium transition-all duration-300">
-              <div className="aspect-video bg-gradient-card"></div>
+              <div className="aspect-video overflow-hidden">
+                <img src={blog.image} alt={blog.title} className="w-full h-full object-cover" />
+              </div>
               <CardHeader>
                 <div className="flex items-center justify-between mb-2">
                   <Badge variant="secondary">{blog.category}</Badge>

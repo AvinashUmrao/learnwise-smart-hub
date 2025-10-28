@@ -26,7 +26,7 @@ export const HeroSection = () => {
               Start Learning Now
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+            <Button size="lg" variant="outline" className="border-white/80 text-white hover:bg-white hover:text-primary shadow-lg backdrop-blur-sm bg-white/10">
               <Play className="mr-2 h-5 w-5" />
               Watch Demo
             </Button>

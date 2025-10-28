@@ -1,5 +1,12 @@
 // Sample data for the Smart Education Website
 
+import newsJeeImg from "@/assets/news-jee.jpg";
+import newsGateImg from "@/assets/news-gate.jpg";
+import newsCatImg from "@/assets/news-cat.jpg";
+import blogStudyImg from "@/assets/blog-study-tips.jpg";
+import blogTimeImg from "@/assets/blog-time-management.jpg";
+import blogMentalImg from "@/assets/blog-mental-health.jpg";
+
 export const newsData = [
   {
     id: 1,
@@ -7,7 +14,7 @@ export const newsData = [
     summary: "NTA announces JEE Main 2024 registration dates. Students can apply online from November 1st.",
     date: "2024-01-15",
     category: "JEE",
-    image: "/api/placeholder/400/200"
+    image: newsJeeImg
   },
   {
     id: 2,
@@ -15,7 +22,7 @@ export const newsData = [
     summary: "Indian Institute of Science (IISc) releases GATE 2024 results. Check your score now.",
     date: "2024-01-10",
     category: "GATE",
-    image: "/api/placeholder/400/200"
+    image: newsGateImg
   },
   {
     id: 3,
@@ -23,7 +30,7 @@ export const newsData = [
     summary: "IIMs announce significant changes in CAT 2024 pattern and syllabus.",
     date: "2024-01-08",
     category: "CAT",
-    image: "/api/placeholder/400/200"
+    image: newsCatImg
   }
 ];
 
@@ -36,7 +43,7 @@ export const blogData = [
     date: "2024-01-12",
     readTime: "8 min read",
     category: "Study Tips",
-    image: "/api/placeholder/400/250"
+    image: blogStudyImg
   },
   {
     id: 2,
@@ -46,7 +53,7 @@ export const blogData = [
     date: "2024-01-10",
     readTime: "6 min read",
     category: "GATE",
-    image: "/api/placeholder/400/250"
+    image: blogTimeImg
   },
   {
     id: 3,
@@ -56,7 +63,7 @@ export const blogData = [
     date: "2024-01-08",
     readTime: "7 min read",
     category: "Wellness",
-    image: "/api/placeholder/400/250"
+    image: blogMentalImg
   }
 ];
 
@@ -303,3 +310,204 @@ export const examOptions = [
     status: "available"
   }
 ];
+
+// JEE Data
+export const jeeData = {
+  studyMaterial: [
+    {
+      id: 1,
+      title: "Physics Complete Guide",
+      description: "Mechanics, Thermodynamics, Optics, and Modern Physics with solved examples",
+      type: "PDF",
+      size: "15.2 MB",
+      lessons: 52,
+      downloadUrl: "#"
+    },
+    {
+      id: 2,
+      title: "Chemistry Master Class",
+      description: "Physical, Organic, and Inorganic Chemistry with practice problems",
+      type: "Video Series",
+      duration: "30 hours",
+      lessons: 145,
+      downloadUrl: "#"
+    },
+    {
+      id: 3,
+      title: "Mathematics Problem Solving",
+      description: "Calculus, Algebra, Trigonometry, and Coordinate Geometry",
+      type: "PDF + Practice",
+      size: "12.8 MB",
+      lessons: 65,
+      downloadUrl: "#"
+    }
+  ],
+  previousPapers: [
+    { id: 1, year: 2023, title: "JEE Main 2023 - Session 1", questions: 90, marks: 300, duration: "3 hours", downloadUrl: "#" },
+    { id: 2, year: 2023, title: "JEE Main 2023 - Session 2", questions: 90, marks: 300, duration: "3 hours", downloadUrl: "#" },
+    { id: 3, year: 2022, title: "JEE Main 2022 - Session 1", questions: 90, marks: 300, duration: "3 hours", downloadUrl: "#" },
+    { id: 4, year: 2022, title: "JEE Advanced 2022", questions: 54, marks: 306, duration: "3 hours", downloadUrl: "#" }
+  ],
+  updates: [
+    { id: 1, title: "JEE Main 2025 Dates Announced", date: "2024-01-15", type: "Important", content: "NTA releases JEE Main 2025 schedule. First session in January, second in April." },
+    { id: 2, title: "New Exam Pattern Updates", date: "2024-01-10", type: "Update", content: "Changes in numerical value questions distribution across all three subjects." },
+    { id: 3, title: "Free Mock Tests Available", date: "2024-01-08", type: "Announcement", content: "Practice with full-length JEE Main and Advanced mock tests." }
+  ],
+  syllabus: {
+    "Physics": ["Mechanics", "Thermodynamics", "Electromagnetism", "Optics", "Modern Physics", "Waves"],
+    "Chemistry": ["Physical Chemistry", "Organic Chemistry", "Inorganic Chemistry", "Chemical Bonding", "Periodic Table"],
+    "Mathematics": ["Algebra", "Calculus", "Trigonometry", "Coordinate Geometry", "Vectors", "Probability"]
+  }
+};
+
+// CAT Data
+export const catData = {
+  studyMaterial: [
+    {
+      id: 1,
+      title: "Quantitative Aptitude",
+      description: "Number Systems, Algebra, Geometry, and Modern Math concepts",
+      type: "PDF",
+      size: "10.5 MB",
+      lessons: 38,
+      downloadUrl: "#"
+    },
+    {
+      id: 2,
+      title: "Verbal Ability & Reading Comprehension",
+      description: "Grammar, Vocabulary, RC passages, and Para Jumbles",
+      type: "Video Series",
+      duration: "20 hours",
+      lessons: 95,
+      downloadUrl: "#"
+    },
+    {
+      id: 3,
+      title: "Data Interpretation & Logical Reasoning",
+      description: "Tables, Graphs, Puzzles, and Logical sets",
+      type: "PDF + Practice",
+      size: "9.2 MB",
+      lessons: 42,
+      downloadUrl: "#"
+    }
+  ],
+  previousPapers: [
+    { id: 1, year: 2023, title: "CAT 2023", questions: 66, marks: 198, duration: "2 hours", downloadUrl: "#" },
+    { id: 2, year: 2022, title: "CAT 2022", questions: 66, marks: 198, duration: "2 hours", downloadUrl: "#" },
+    { id: 3, year: 2021, title: "CAT 2021", questions: 66, marks: 198, duration: "2 hours", downloadUrl: "#" },
+    { id: 4, year: 2020, title: "CAT 2020", questions: 76, marks: 228, duration: "2 hours", downloadUrl: "#" }
+  ],
+  updates: [
+    { id: 1, title: "CAT 2025 Registration Opens", date: "2024-01-15", type: "Important", content: "IIM Bangalore announces CAT 2025. Registration starts from August 2024." },
+    { id: 2, title: "Pattern Changes Announced", date: "2024-01-10", type: "Update", content: "New sectional time limits and question distribution for CAT 2025." },
+    { id: 3, title: "Mock Test Series Launch", date: "2024-01-08", type: "Announcement", content: "Official CAT mock tests available on the IIM website." }
+  ],
+  syllabus: {
+    "Quantitative Aptitude": ["Arithmetic", "Algebra", "Geometry", "Number Systems", "Modern Math"],
+    "Verbal Ability": ["Reading Comprehension", "Para Jumbles", "Para Summary", "Grammar", "Vocabulary"],
+    "Data Interpretation": ["Tables", "Charts", "Graphs", "Caselets", "Data Sufficiency"],
+    "Logical Reasoning": ["Arrangements", "Puzzles", "Blood Relations", "Syllogisms", "Coding-Decoding"]
+  }
+};
+
+// NEET Data
+export const neetData = {
+  studyMaterial: [
+    {
+      id: 1,
+      title: "Physics for Medical Entrance",
+      description: "Mechanics, Electricity, Magnetism, Optics, and Modern Physics",
+      type: "PDF",
+      size: "13.8 MB",
+      lessons: 45,
+      downloadUrl: "#"
+    },
+    {
+      id: 2,
+      title: "Chemistry Complete Course",
+      description: "Physical, Organic, and Inorganic Chemistry for NEET",
+      type: "Video Series",
+      duration: "28 hours",
+      lessons: 130,
+      downloadUrl: "#"
+    },
+    {
+      id: 3,
+      title: "Biology - Botany & Zoology",
+      description: "Complete NCERT coverage with additional concepts and diagrams",
+      type: "PDF + Practice",
+      size: "18.5 MB",
+      lessons: 85,
+      downloadUrl: "#"
+    }
+  ],
+  previousPapers: [
+    { id: 1, year: 2023, title: "NEET 2023", questions: 200, marks: 720, duration: "3 hours 20 min", downloadUrl: "#" },
+    { id: 2, year: 2022, title: "NEET 2022", questions: 200, marks: 720, duration: "3 hours 20 min", downloadUrl: "#" },
+    { id: 3, year: 2021, title: "NEET 2021", questions: 200, marks: 720, duration: "3 hours 20 min", downloadUrl: "#" },
+    { id: 4, year: 2020, title: "NEET 2020", questions: 180, marks: 720, duration: "3 hours", downloadUrl: "#" }
+  ],
+  updates: [
+    { id: 1, title: "NEET 2025 Notification Released", date: "2024-01-15", type: "Important", content: "NTA announces NEET UG 2025. Exam scheduled for May 2025." },
+    { id: 2, title: "Syllabus Clarification", date: "2024-01-10", type: "Update", content: "Official clarification on NCERT-based syllabus for NEET 2025." },
+    { id: 3, title: "Practice Papers Available", date: "2024-01-08", type: "Announcement", content: "Free NEET practice papers and topic-wise tests now available." }
+  ],
+  syllabus: {
+    "Physics": ["Mechanics", "Thermodynamics", "Electrodynamics", "Optics", "Modern Physics", "SHM & Waves"],
+    "Chemistry": ["Physical Chemistry", "Organic Chemistry", "Inorganic Chemistry", "Environmental Chemistry"],
+    "Botany": ["Plant Physiology", "Genetics", "Ecology", "Reproduction", "Cell Biology"],
+    "Zoology": ["Human Physiology", "Evolution", "Biotechnology", "Diversity", "Reproduction"]
+  }
+};
+
+// UPSC Data
+export const upscData = {
+  studyMaterial: [
+    {
+      id: 1,
+      title: "General Studies Paper I",
+      description: "Indian Heritage, History, Geography, and Society",
+      type: "PDF",
+      size: "22.5 MB",
+      lessons: 95,
+      downloadUrl: "#"
+    },
+    {
+      id: 2,
+      title: "General Studies Paper II",
+      description: "Governance, Constitution, Polity, Social Justice",
+      type: "Video Series",
+      duration: "45 hours",
+      lessons: 180,
+      downloadUrl: "#"
+    },
+    {
+      id: 3,
+      title: "Current Affairs & News Analysis",
+      description: "Monthly compilations, editorials, and PIB analysis",
+      type: "PDF + Practice",
+      size: "15.8 MB",
+      lessons: 120,
+      downloadUrl: "#"
+    }
+  ],
+  previousPapers: [
+    { id: 1, year: 2023, title: "UPSC Prelims 2023 - GS Paper I", questions: 100, marks: 200, duration: "2 hours", downloadUrl: "#" },
+    { id: 2, year: 2023, title: "UPSC Prelims 2023 - CSAT", questions: 80, marks: 200, duration: "2 hours", downloadUrl: "#" },
+    { id: 3, year: 2022, title: "UPSC Prelims 2022 - GS Paper I", questions: 100, marks: 200, duration: "2 hours", downloadUrl: "#" },
+    { id: 4, year: 2022, title: "UPSC Mains 2022 - Essay", questions: 2, marks: 250, duration: "3 hours", downloadUrl: "#" }
+  ],
+  updates: [
+    { id: 1, title: "UPSC CSE 2025 Calendar Released", date: "2024-01-15", type: "Important", content: "UPSC announces Civil Services Examination 2025 schedule. Prelims in May." },
+    { id: 2, title: "New Optional Subjects Added", date: "2024-01-10", type: "Update", content: "UPSC adds new optional subjects for Mains examination." },
+    { id: 3, title: "Interview Guidance Program", date: "2024-01-08", type: "Announcement", content: "Free personality test and interview preparation resources available." }
+  ],
+  syllabus: {
+    "History": ["Ancient India", "Medieval India", "Modern India", "Art & Culture", "World History"],
+    "Geography": ["Physical Geography", "Indian Geography", "World Geography", "Environment & Ecology"],
+    "Polity": ["Constitution", "Governance", "Social Justice", "International Relations"],
+    "Economy": ["Indian Economy", "Economic Development", "Budget", "Banking & Finance"],
+    "Science & Technology": ["Current Developments", "Space", "IT", "Biotechnology"],
+    "Current Affairs": ["National Issues", "International Events", "Government Schemes", "Reports & Indices"]
+  }
+};

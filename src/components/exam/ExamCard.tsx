@@ -59,10 +59,10 @@ export const ExamCard = ({
         </div>
 
         <div className="pt-4">
-          {id === 'gate' ? (
-            <Link to="/gate">
+          {['gate', 'jee', 'cat', 'neet', 'upsc'].includes(id) ? (
+            <Link to={`/${id}`}>
               <Button className="w-full" variant="default">
-                Start GATE Preparation
+                Start {name} Preparation
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
