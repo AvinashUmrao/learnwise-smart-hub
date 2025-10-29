@@ -12,7 +12,12 @@ export const ChatbotSection = () => {
           
           <div className="relative grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <Badge variant="secondary" className="mb-4 text-primary">AI Powered</Badge>
+              <Badge
+                variant="secondary"
+                className="mb-4 text-primary bg-white dark:bg-yellow-400 dark:text-black"
+              >
+                AI Powered
+              </Badge>
               <h2 className="text-3xl md:text-4xl font-bold mb-6">
                 Smart Learning Assistant
               </h2>
@@ -21,11 +26,19 @@ export const ChatbotSection = () => {
                 Available 24/7 to help with doubts, explanations, and study guidance.
               </p>
               <div className="flex gap-4">
-                <Button variant="default" size="lg" className="bg-white text-primary hover:bg-white/90">
+                <Button
+                  variant="default"
+                  size="lg"
+                  className="bg-primary text-white hover:bg-primary/90 border border-primary dark:bg-yellow-400 dark:text-black dark:hover:bg-yellow-300"
+                >
                   <MessageCircle className="mr-2 h-5 w-5" />
                   Try Chatbot
                 </Button>
-                <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="border-primary text-primary bg-white hover:bg-primary/10 dark:bg-yellow-400 dark:text-black dark:border-yellow-400 dark:hover:bg-yellow-300"
+                >
                   Learn More
                 </Button>
               </div>

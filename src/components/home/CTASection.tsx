@@ -1,6 +1,4 @@
 import { ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 
 export const CTASection = () => {
   return (
@@ -13,17 +11,6 @@ export const CTASection = () => {
           Join thousands of successful students who achieved their goals with EduSmart. 
           Start your preparation today and get ahead of the competition.
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link to="/exam-prep">
-            <Button size="lg" variant="hero" className="w-full sm:w-auto">
-              Explore Exam Preparation
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </Link>
-          <Button size="lg" variant="outline">
-            Schedule Demo
-          </Button>
-        </div>
       </div>
     </section>
   );

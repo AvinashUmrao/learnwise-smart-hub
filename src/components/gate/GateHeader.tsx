@@ -22,10 +22,7 @@ export const GateHeader = () => {
             Take Practice Quiz
           </Button>
         </Link>
-        <Button size="lg" variant="outline">
-          <PlayCircle className="mr-2 h-5 w-5" />
-          Watch Introduction
-        </Button>
+        
       </div>
     </div>
   );

@@ -8,23 +8,23 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { getCategory, getRating } from "@/lib/adaptive";
-import { subjects, getTopicsBySubject } from "@/data/questionBank";
+import { jeeSubjects, getJeeTopicsBySubject } from "@/data/jeeQuestionBank";
 import { getStreakData, getEarnedBadges } from "@/lib/gamification";
 
-interface QuizStartProps {
+interface JeeQuizStartProps {
   onStart: (quizType: 'topic' | 'subject' | 'full', duration: number, subject?: string, topic?: string) => void;
   onStartCalibration?: (duration: number, subject: string) => void;
 }
 
-export const QuizStart = ({ onStart, onStartCalibration }: QuizStartProps) => {
+export const JeeQuizStart = ({ onStart, onStartCalibration }: JeeQuizStartProps) => {
   const [selectedType, setSelectedType] = useState<'topic' | 'subject' | 'full'>('full');
   const [duration, setDuration] = useState(15);
-  const [selectedSubject, setSelectedSubject] = useState<string>('algorithms');
+  const [selectedSubject, setSelectedSubject] = useState<string>('physics');
   const [selectedTopic, setSelectedTopic] = useState<string>('');
   
-  const currentCategory = getCategory('gate', selectedSubject);
-  const currentRating = getRating('gate', selectedSubject);
-  const availableTopics = getTopicsBySubject(selectedSubject);
+  const currentCategory = getCategory('jee', selectedSubject);
+  const currentRating = getRating('jee', selectedSubject);
+  const availableTopics = getJeeTopicsBySubject(selectedSubject);
   const streakData = getStreakData();
   const badges = getEarnedBadges();
   
@@ -39,7 +39,7 @@ export const QuizStart = ({ onStart, onStartCalibration }: QuizStartProps) => {
     {
       id: 'full' as const,
       title: 'Full Syllabus Test',
-      description: 'Comprehensive test covering all subjects',
+      description: 'Comprehensive test covering Physics, Chemistry, and Mathematics',
       questions: 15,
       duration: 25,
       icon: Brain,
@@ -72,7 +72,7 @@ export const QuizStart = ({ onStart, onStartCalibration }: QuizStartProps) => {
   
   const handleSubjectChange = (subjectId: string) => {
     setSelectedSubject(subjectId);
-    const topics = getTopicsBySubject(subjectId);
+    const topics = getJeeTopicsBySubject(subjectId);
     if (topics.length > 0) {
       setSelectedTopic(topics[0].id);
     }
@@ -110,9 +110,9 @@ export const QuizStart = ({ onStart, onStartCalibration }: QuizStartProps) => {
     <div className="min-h-screen bg-background pt-20">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">
-          <Badge variant="outline" className="mb-4">GATE Adaptive Quiz</Badge>
+          <Badge variant="outline" className="mb-4">JEE Adaptive Quiz</Badge>
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-            Start Your Quiz
+            Start Your JEE Quiz
           </h1>
           <p className="text-xl text-muted-foreground mb-8">
             Choose your test type and begin your adaptive learning journey
@@ -160,7 +160,7 @@ export const QuizStart = ({ onStart, onStartCalibration }: QuizStartProps) => {
                   <SelectValue placeholder="Select a subject" />
                 </SelectTrigger>
                 <SelectContent>
-                  {subjects.map((subject) => (
+                  {jeeSubjects.map((subject) => (
                     <SelectItem key={subject.id} value={subject.id}>
                       <div>
                         <div className="font-medium">{subject.name}</div>
@@ -224,11 +224,11 @@ export const QuizStart = ({ onStart, onStartCalibration }: QuizStartProps) => {
         </Card>
 
         {/* Topic Selection (only for topic-wise) */}
-        {selectedType === 'topic' && (
+        {selectedType === 'topic' && availableTopics.length > 0 && (
           <Card className="border-0 shadow-strong mb-8">
             <CardHeader>
               <CardTitle>Select Topic</CardTitle>
-              <CardDescription>Choose a specific topic to practice</CardDescription>
+              <CardDescription>Choose a specific topic to focus on</CardDescription>
             </CardHeader>
             <CardContent>
               <Select value={selectedTopic} onValueChange={setSelectedTopic}>
@@ -250,88 +250,43 @@ export const QuizStart = ({ onStart, onStartCalibration }: QuizStartProps) => {
           </Card>
         )}
 
-        {/* Quiz Details */}
-        <Card className="max-w-2xl mx-auto border-0 shadow-strong mb-8">
-          <CardHeader className="text-center">
-            <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
-              {selectedQuizType && <selectedQuizType.icon className="w-8 h-8 text-white" />}
-            </div>
-            <CardTitle className="text-2xl">Quiz Details</CardTitle>
-            <CardDescription>Everything you need to know before starting</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid md:grid-cols-3 gap-6 text-center">
-              <div className="p-4 bg-accent/50 rounded-xl">
-                <div className="text-2xl font-bold text-primary mb-2">
-                  {selectedQuizType?.questions}
+        {/* Quiz Summary & Actions */}
+        <Card className="border-0 shadow-strong bg-gradient-to-br from-primary/5 to-primary/10">
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Ready to Start?</h3>
+                <div className="space-y-1 text-sm text-muted-foreground">
+                  <p>• {selectedQuizType?.questions} questions</p>
+                  <p>• {selectedQuizType?.duration} minutes duration</p>
+                  <p>• Adaptive difficulty based on your performance</p>
                 </div>
-                <div className="text-sm text-muted-foreground">Questions</div>
               </div>
-              <div className="p-4 bg-accent/50 rounded-xl">
-                <div className="text-2xl font-bold text-warning mb-2">
-                  <Clock className="w-6 h-6 mx-auto mb-1" />
-                  {duration}
-                </div>
-                <div className="text-sm text-muted-foreground">Minutes</div>
-              </div>
-              <div className="p-4 bg-accent/50 rounded-xl">
-                <div className="text-2xl font-bold text-success mb-2">Mixed</div>
-                <div className="text-sm text-muted-foreground">Difficulty</div>
-              </div>
+              <Clock className="w-12 h-12 text-primary opacity-50" />
             </div>
-
-            <div className="space-y-4">
-              <h3 className="font-semibold text-center">Topics Covered:</h3>
-              <div className="flex flex-wrap gap-2 justify-center">
-                <Badge variant="secondary">Data Structures</Badge>
-                <Badge variant="secondary">Algorithms</Badge>
-                <Badge variant="secondary">Time Complexity</Badge>
-                <Badge variant="secondary">Problem Solving</Badge>
-              </div>
-            </div>
-
-            <div className="bg-accent/30 p-4 rounded-lg space-y-2">
-              <h4 className="font-semibold text-sm">Quiz Features:</h4>
-              <ul className="text-sm text-muted-foreground space-y-1">
-                <li>✓ Mark questions for review</li>
-                <li>✓ Navigate between questions freely</li>
-                <li>✓ View summary before submission</li>
-                <li>✓ Get detailed explanations for each answer</li>
-                <li>✓ Track your performance with analytics</li>
-              </ul>
-            </div>
-
-            <div className="text-center space-y-4">
-              {onStartCalibration && (
-                <div className="p-4 bg-primary/5 border-2 border-primary/20 rounded-lg mb-4">
-                  <h4 className="font-semibold mb-2 flex items-center justify-center gap-2">
-                    <Target className="w-5 h-5" />
-                    New to this subject?
-                  </h4>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Take the calibration test to determine your starting level
-                  </p>
-                  <Button onClick={handleCalibration} variant="default" className="w-full" size="lg">
-                    <Target className="mr-2 h-5 w-5" />
-                    Take Initial Level Test (9 Questions)
-                  </Button>
-                </div>
-              )}
-              
-              <Button onClick={handleStart} size="lg" variant="hero" className="w-full">
-                <Brain className="mr-2 h-5 w-5" />
-                Start Adaptive {selectedQuizType?.title}
+            
+            <div className="flex gap-4">
+              <Button onClick={handleStart} size="lg" className="flex-1">
+                Start Adaptive Quiz
               </Button>
-              
-              <Link to="/gate">
-                <Button variant="outline" className="w-full">
-                  <ArrowLeft className="mr-2 h-4 w-4" />
-                  Back to GATE Course
+              {onStartCalibration && (selectedType === 'subject' || selectedType === 'topic') && (
+                <Button onClick={handleCalibration} variant="outline" size="lg">
+                  Take Initial Level Test
                 </Button>
-              </Link>
+              )}
             </div>
           </CardContent>
         </Card>
+
+        {/* Back Button */}
+        <div className="mt-8 text-center">
+          <Link to="/jee">
+            <Button variant="ghost">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to JEE Home
+            </Button>
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -16,7 +16,7 @@ const Gate = () => {
     <div className="min-h-screen bg-background pt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <GateHeader />
-        <GateStats />
+        {/* <GateStats /> */}
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 mb-8">

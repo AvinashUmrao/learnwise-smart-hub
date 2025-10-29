@@ -22,7 +22,12 @@ export const Footer = () => {
               <a href="#" className="w-8 h-8 bg-accent rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
                 <Instagram className="w-4 h-4" />
               </a>
-              <a href="#" className="w-8 h-8 bg-accent rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+              <a
+                href="https://www.linkedin.com/in/avinash-umrao-5184182b9/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-8 h-8 bg-accent rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors"
+              >
                 <Linkedin className="w-4 h-4" />
               </a>
             </div>
@@ -59,9 +64,9 @@ export const Footer = () => {
                 <Mail className="w-4 h-4" />
                 support@smartedu.com
               </li>
-              <li>123 Education Street</li>
-              <li>New Delhi, India - 110001</li>
-              <li>+91 98765 43210</li>
+              <li>Jaypee Institute of Information Technology</li>
+              <li>Sector-62, Noida, India - 201309</li>
+              <li>+91 8630029486</li>
             </ul>
           </div>
         </div>

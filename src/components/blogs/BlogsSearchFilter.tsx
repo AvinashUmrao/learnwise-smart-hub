@@ -1,38 +1,69 @@
-import { Search, Filter } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { blogData } from "@/data/sampleData";
 
-export const BlogsSearchFilter = () => {
+interface BlogsSearchFilterProps {
+  onFilterChange: (filteredBlogs: typeof blogData) => void;
+}
+
+export const BlogsSearchFilter = ({ onFilterChange }: BlogsSearchFilterProps) => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState("All");
   const categories = ["All", "Study Tips", "GATE", "Wellness", "Technology", "Success Stories"];
 
+  const filterBlogs = (query: string, category: string) => {
+    let filtered = [...blogData];
+
+    if (query.trim()) {
+      const searchLower = query.toLowerCase().trim();
+      filtered = filtered.filter(blog =>
+        blog.title.toLowerCase().includes(searchLower) ||
+        blog.excerpt.toLowerCase().includes(searchLower) ||
+        blog.author.toLowerCase().includes(searchLower)
+      );
+    }
+
+    if (category !== "All") {
+      filtered = filtered.filter(blog => blog.category === category);
+    }
+
+    onFilterChange(filtered);
+  };
+
   return (
-    <>
-      <div className="flex flex-col sm:flex-row gap-4 mb-12">
+    <div className="mb-8">
+      <div className="flex gap-4 mb-6">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-          <Input 
-            placeholder="Search articles..." 
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            type="search"
+            placeholder="Search articles..."
             className="pl-10"
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              filterBlogs(e.target.value, activeCategory);
+            }}
           />
         </div>
-        <Button variant="outline" size="default">
-          <Filter className="mr-2 h-4 w-4" />
-          Filter
-        </Button>
       </div>
-
-      <div className="flex flex-wrap gap-2 mb-12 justify-center">
+      <div className="flex flex-wrap gap-2">
         {categories.map((category) => (
           <Button
             key={category}
-            variant={category === "All" ? "default" : "outline"}
+            variant={category === activeCategory ? "default" : "outline"}
             size="sm"
-            className="rounded-full"
+            onClick={() => {
+              setActiveCategory(category);
+              filterBlogs(searchQuery, category);
+            }}
           >
             {category}
           </Button>
         ))}
       </div>
-    </>
+    </div>
   );
 };

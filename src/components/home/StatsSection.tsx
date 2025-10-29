@@ -2,10 +2,10 @@ import { Users, TrendingUp, BookOpen, Award } from "lucide-react";
 
 export const StatsSection = () => {
   const stats = [
-    { label: "Students Enrolled", value: "50,000+", icon: Users },
-    { label: "Success Rate", value: "95%", icon: TrendingUp },
-    { label: "Study Materials", value: "1,200+", icon: BookOpen },
-    { label: "Practice Tests", value: "500+", icon: Award }
+    { label: "Students Enrollment", value: "", icon: Users },
+    { label: "Success Rate", value: "", icon: TrendingUp },
+    { label: "Study Materials", value: "", icon: BookOpen },
+    { label: "Practice Tests", value: "", icon: Award }
   ];
 
   return (

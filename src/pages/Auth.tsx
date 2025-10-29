@@ -1,18 +1,35 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
+import { auth } from "../firebase";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 import { BookOpen, Mail, Lock, User } from "lucide-react";
 import { toast } from "sonner";
 
 const Auth = () => {
   const navigate = useNavigate();
-  const { login, signup, isAuthenticated } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("login");
 
   // Login form state
   const [loginEmail, setLoginEmail] = useState("");
@@ -24,15 +41,9 @@ const Auth = () => {
   const [signupPassword, setSignupPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  // Redirect if already authenticated
-  if (isAuthenticated) {
-    navigate("/");
-    return null;
-  }
-
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    
+
     if (!loginEmail || !loginPassword) {
       toast.error("Please fill in all fields");
       return;
@@ -40,21 +51,17 @@ const Auth = () => {
 
     setIsLoading(true);
     try {
-      const success = await login(loginEmail, loginPassword);
-      if (success) {
-        toast.success("Login successful!");
-        navigate("/");
-      } else {
-        toast.error("Invalid credentials");
-      }
+      await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
+      toast.success("Login successful!");
+      navigate("/");
     } catch (error) {
-      toast.error("An error occurred during login");
+      toast.error("Invalid login credentials");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleSignup = async (e: React.FormEvent) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
 
     if (!signupName || !signupEmail || !signupPassword || !confirmPassword) {
@@ -74,15 +81,24 @@ const Auth = () => {
 
     setIsLoading(true);
     try {
-      const success = await signup(signupName, signupEmail, signupPassword);
-      if (success) {
-        toast.success("Account created successfully!");
-        navigate("/");
-      } else {
-        toast.error("Failed to create account");
-      }
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        signupEmail,
+        signupPassword
+      );
+      await updateProfile(userCredential.user, { displayName: signupName });
+      toast.success("Account created successfully! Please login now.");
+
+      // ✅ Switch to login tab after signup
+      setActiveTab("login");
+
+      // Optional: Clear signup form
+      setSignupName("");
+      setSignupEmail("");
+      setSignupPassword("");
+      setConfirmPassword("");
     } catch (error) {
-      toast.error("An error occurred during signup");
+      toast.error(error.message || "Signup failed");
     } finally {
       setIsLoading(false);
     }
@@ -109,20 +125,24 @@ const Auth = () => {
             <CardDescription>Login or create a new account</CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="login" className="w-full">
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="w-full"
+            >
               <TabsList className="grid w-full grid-cols-2 mb-6">
                 <TabsTrigger value="login">Login</TabsTrigger>
                 <TabsTrigger value="signup">Sign Up</TabsTrigger>
               </TabsList>
 
+              {/* LOGIN */}
               <TabsContent value="login">
                 <form onSubmit={handleLogin} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="login-email">Email</Label>
+                    <Label>Email</Label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
-                        id="login-email"
                         type="email"
                         placeholder="your@email.com"
                         value={loginEmail}
@@ -134,11 +154,10 @@ const Auth = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="login-password">Password</Label>
+                    <Label>Password</Label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
-                        id="login-password"
                         type="password"
                         placeholder="••••••••"
                         value={loginPassword}
@@ -149,9 +168,9 @@ const Auth = () => {
                     </div>
                   </div>
 
-                  <Button 
-                    type="submit" 
-                    className="w-full" 
+                  <Button
+                    type="submit"
+                    className="w-full"
                     variant="hero"
                     disabled={isLoading}
                   >
@@ -160,14 +179,14 @@ const Auth = () => {
                 </form>
               </TabsContent>
 
+              {/* SIGNUP */}
               <TabsContent value="signup">
                 <form onSubmit={handleSignup} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="signup-name">Full Name</Label>
+                    <Label>Full Name</Label>
                     <div className="relative">
                       <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
-                        id="signup-name"
                         type="text"
                         placeholder="John Doe"
                         value={signupName}
@@ -179,11 +198,10 @@ const Auth = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
+                    <Label>Email</Label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
-                        id="signup-email"
                         type="email"
                         placeholder="your@email.com"
                         value={signupEmail}
@@ -195,11 +213,10 @@ const Auth = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
+                    <Label>Password</Label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
-                        id="signup-password"
                         type="password"
                         placeholder="••••••••"
                         value={signupPassword}
@@ -211,11 +228,10 @@ const Auth = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="confirm-password">Confirm Password</Label>
+                    <Label>Confirm Password</Label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
-                        id="confirm-password"
                         type="password"
                         placeholder="••••••••"
                         value={confirmPassword}
@@ -226,9 +242,9 @@ const Auth = () => {
                     </div>
                   </div>
 
-                  <Button 
-                    type="submit" 
-                    className="w-full" 
+                  <Button
+                    type="submit"
+                    className="w-full"
                     variant="hero"
                     disabled={isLoading}
                   >

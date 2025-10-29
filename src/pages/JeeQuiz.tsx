@@ -1,17 +1,17 @@
 import { useEffect } from "react";
-import { QuizStart } from "@/components/quiz/QuizStart";
+import { JeeQuizStart } from "@/components/quiz/JeeQuizStart";
 import { QuizTaking } from "@/components/quiz/QuizTaking";
 import { QuizResults } from "@/components/quiz/QuizResults";
 import { QuizNavigation } from "@/components/quiz/QuizNavigation";
 import { useQuiz } from "@/contexts/QuizContext";
 import { buildCalibrationQuiz, buildAdaptiveQuiz, getCategory, getRating, ratingChangeFromPerformance, setRating, analyzePerformance, calibrationAssignment } from "@/lib/adaptive";
-import { getQuestionsBySubject, getQuestionsByTopic, questionBank } from "@/data/questionBank";
+import { getJeeQuestionsBySubject, getJeeQuestionsByTopic, jeeQuestionBank } from "@/data/jeeQuestionBank";
 import { addQuizAttempt, updateStreak, checkAndAwardBadges, getQuizHistory } from "@/lib/gamification";
 
 type QuizStage = 'start' | 'taking' | 'results';
 
-const GateQuiz = () => {
-  const { quizState, startQuiz, startQuizWithQuestions, selectAnswer, nextQuestion, previousQuestion, submitQuiz, resetQuiz } = useQuiz();
+const JeeQuiz = () => {
+  const { quizState, startQuizWithQuestions, selectAnswer, nextQuestion, previousQuestion, submitQuiz, resetQuiz } = useQuiz();
 
   const stage: QuizStage = !quizState ? 'start' : quizState.isCompleted ? 'results' : 'taking';
 
@@ -24,15 +24,15 @@ const GateQuiz = () => {
       if (quizState.mode === 'calibration') {
         const cat = calibrationAssignment(perf.correct);
         const initialMap: Record<string, number> = { Low: 100, Medium: 300, Best: 600 };
-        setRating('gate', initialMap[cat], subject);
-        const catKey = subject ? `adaptive_category_gate_${subject}` : 'adaptive_category_gate';
+        setRating('jee', initialMap[cat], subject);
+        const catKey = subject ? `adaptive_category_jee_${subject}` : 'adaptive_category_jee';
         localStorage.setItem(catKey, cat);
       } else {
         const delta = ratingChangeFromPerformance((perf.correct / perf.total) * 100);
-        const currentRating = getRating('gate', subject);
-        setRating('gate', currentRating + delta, subject);
-        const catKey = subject ? `adaptive_category_gate_${subject}` : 'adaptive_category_gate';
-        localStorage.setItem(catKey, getCategory('gate', subject));
+        const currentRating = getRating('jee', subject);
+        setRating('jee', currentRating + delta, subject);
+        const catKey = subject ? `adaptive_category_jee_${subject}` : 'adaptive_category_jee';
+        localStorage.setItem(catKey, getCategory('jee', subject));
       }
       
       // Gamification: Track quiz attempt
@@ -43,8 +43,8 @@ const GateQuiz = () => {
         score: perf.correct,
         totalQuestions: perf.total,
         accuracy: Math.round((perf.correct / perf.total) * 100),
-        category: getCategory('gate', subject),
-        rating: getRating('gate', subject),
+        category: getCategory('jee', subject),
+        rating: getRating('jee', subject),
         timeTaken: totalTime,
         difficulty: quizState.mode === 'calibration' ? 'Mixed' : 'Adaptive',
       });
@@ -71,17 +71,17 @@ const GateQuiz = () => {
     // Get questions based on quiz type
     if (quizType === 'full') {
       // Full syllabus: use all questions from all subjects
-      questionPool = questionBank;
+      questionPool = jeeQuestionBank;
       targetCount = 15;
-      category = getCategory('gate'); // Use default category
+      category = getCategory('jee'); // Use default category
     } else if (quizType === 'topic' && topic && subject) {
-      questionPool = getQuestionsByTopic(subject, topic);
+      questionPool = getJeeQuestionsByTopic(subject, topic);
       targetCount = 6;
-      category = getCategory('gate', subject);
+      category = getCategory('jee', subject);
     } else if (subject) {
-      questionPool = getQuestionsBySubject(subject);
+      questionPool = getJeeQuestionsBySubject(subject);
       targetCount = 12;
-      category = getCategory('gate', subject);
+      category = getCategory('jee', subject);
     } else {
       return; // Invalid state
     }
@@ -90,7 +90,7 @@ const GateQuiz = () => {
     const questions = buildAdaptiveQuiz(questionPool as any, category, Math.min(targetCount, questionPool.length));
     
     startQuizWithQuestions({ 
-      examName: 'gate', 
+      examName: 'jee', 
       quizType, 
       questions: questions as any, 
       durationMin: duration, 
@@ -100,11 +100,11 @@ const GateQuiz = () => {
   };
 
   const handleCalibrationStart = (duration: number, subject: string) => {
-    const questionPool = getQuestionsBySubject(subject);
+    const questionPool = getJeeQuestionsBySubject(subject);
     const questions = buildCalibrationQuiz(questionPool as any);
     
     startQuizWithQuestions({ 
-      examName: 'gate', 
+      examName: 'jee', 
       quizType: 'subject', 
       questions: questions as any, 
       durationMin: duration, 
@@ -140,7 +140,10 @@ const GateQuiz = () => {
   };
 
   if (stage === 'start') {
-    return <QuizStart onStart={handleStart} onStartCalibration={handleCalibrationStart} />;
+    return <JeeQuizStart 
+      onStart={handleStart} 
+      onStartCalibration={handleCalibrationStart}
+    />;
   }
 
   if (stage === 'results' && quizState && quizState.questions?.length) {
@@ -179,4 +182,4 @@ const GateQuiz = () => {
   );
 };
 
-export default GateQuiz;
+export default JeeQuiz;

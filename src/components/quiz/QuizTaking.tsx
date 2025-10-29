@@ -28,8 +28,9 @@ export const QuizTaking = ({
 }: QuizTakingProps) => {
   const [showExplanation, setShowExplanation] = useState(false);
   const { quizState, markForReview } = useQuiz();
-  const question = quizQuestions[currentQuestion];
-  const progress = ((currentQuestion + 1) / quizQuestions.length) * 100;
+  const questions = quizState?.questions?.length ? quizState.questions : quizQuestions;
+  const question = questions[currentQuestion];
+  const progress = ((currentQuestion + 1) / questions.length) * 100;
   const isMarked = quizState?.answers[currentQuestion]?.markedForReview || false;
 
   const formatTime = (seconds: number) => {
@@ -44,7 +45,7 @@ export const QuizTaking = ({
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
           <Badge variant="outline">
-            Question {currentQuestion + 1} of {quizQuestions.length}
+            Question {currentQuestion + 1} of {questions.length}
           </Badge>
           <div className="flex items-center gap-2 text-muted-foreground">
             <Clock className="w-4 h-4" />
@@ -131,9 +132,9 @@ export const QuizTaking = ({
         <Button 
           onClick={onNext}
           disabled={selectedAnswer === null}
-          variant={currentQuestion === quizQuestions.length - 1 ? "hero" : "default"}
+          variant={currentQuestion === questions.length - 1 ? "hero" : "default"}
         >
-          {currentQuestion === quizQuestions.length - 1 ? 'Submit Quiz' : 'Next Question'}
+          {currentQuestion === questions.length - 1 ? 'Submit Quiz' : 'Next Question'}
           <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </div>

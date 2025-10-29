@@ -17,20 +17,28 @@ const Navbar = () => {
     { name: "Plague Check", href: "/plague-check", icon: Search },
   ];
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setIsOpen(false);
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
+  };
+
   return (
     <nav className="fixed top-0 w-full z-50 bg-card/95 backdrop-blur-md border-b border-border shadow-soft">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex items-center">
-            <Link to="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-                <BookOpen className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                EduSmart
-              </span>
-            </Link>
-          </div>
+        <div className="flex justify-between h-16 items-center">
+          {/* Logo */}
+          <Link to="/" className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
+              <BookOpen className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+              EduSmart+
+            </span>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
@@ -52,16 +60,19 @@ const Navbar = () => {
                 </Link>
               );
             })}
+
             <ThemeToggle />
+
+            {/* ✅ Auth Section */}
             {user ? (
-              <>
+              <div className="flex items-center space-x-3">
                 <span className="text-sm text-muted-foreground">
                   {user.name}
                 </span>
-                <Button variant="outline" size="sm" onClick={logout}>
+                <Button variant="outline" size="sm" onClick={handleLogout}>
                   Logout
                 </Button>
-              </>
+              </div>
             ) : (
               <Link to="/auth">
                 <Button variant="hero" size="sm">
@@ -71,7 +82,7 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile Menu Toggle */}
           <div className="md:hidden flex items-center">
             <Button
               variant="ghost"
@@ -86,8 +97,8 @@ const Navbar = () => {
 
       {/* Mobile Navigation */}
       {isOpen && (
-        <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 bg-card border-t border-border">
+        <div className="md:hidden bg-card border-t border-border">
+          <div className="px-2 pt-2 pb-3 space-y-1">
             {navigation.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.href;
@@ -107,25 +118,31 @@ const Navbar = () => {
                 </Link>
               );
             })}
-            <div className="px-3 py-2 space-y-2">
-              <ThemeToggle />
-              {user ? (
-                <>
-                  <div className="text-sm text-muted-foreground px-3">
-                    Logged in as {user.name}
-                  </div>
-                  <Button variant="outline" size="sm" className="w-full" onClick={logout}>
-                    Logout
-                  </Button>
-                </>
-              ) : (
-                <Link to="/auth">
-                  <Button variant="hero" size="sm" className="w-full">
-                    Get Started
-                  </Button>
-                </Link>
-              )}
-            </div>
+          </div>
+
+          <div className="px-3 py-3 border-t border-border space-y-2">
+            <ThemeToggle />
+            {user ? (
+              <>
+                <div className="text-sm text-muted-foreground px-2">
+                  {user.name}
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <Link to="/auth" onClick={() => setIsOpen(false)}>
+                <Button variant="hero" size="sm" className="w-full">
+                  Get Started
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       )}

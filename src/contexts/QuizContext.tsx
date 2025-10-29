@@ -5,6 +5,20 @@ interface QuizAnswer {
   selectedAnswer: number | null;
   markedForReview: boolean;
   isCorrect?: boolean;
+  timeTakenSec?: number;
+}
+
+export type Difficulty = 'Easy' | 'Medium' | 'Hard';
+
+export interface QuizQuestion {
+  id: number;
+  question: string;
+  options: string[];
+  correctAnswer: number;
+  explanation: string;
+  subject: string;
+  difficulty: Difficulty;
+  topic?: string;
 }
 
 interface QuizState {
@@ -14,11 +28,15 @@ interface QuizState {
   answers: QuizAnswer[];
   timeLeft: number;
   isCompleted: boolean;
+  questions: QuizQuestion[];
+  mode: 'standard' | 'calibration' | 'adaptive';
+  subject?: string;
 }
 
 interface QuizContextType {
   quizState: QuizState | null;
   startQuiz: (examName: string, quizType: 'topic' | 'subject' | 'full', totalQuestions: number, duration: number) => void;
+  startQuizWithQuestions: (params: { examName: string; quizType: 'topic' | 'subject' | 'full'; questions: QuizQuestion[]; durationMin: number; mode?: 'standard' | 'calibration' | 'adaptive'; subject?: string; }) => void;
   selectAnswer: (questionId: number, answerIndex: number) => void;
   markForReview: (questionId: number) => void;
   nextQuestion: () => void;
@@ -34,6 +52,7 @@ const QuizContext = createContext<QuizContextType | undefined>(undefined);
 
 export const QuizProvider = ({ children }: { children: ReactNode }) => {
   const [quizState, setQuizState] = useState<QuizState | null>(null);
+  const [questionViewTs, setQuestionViewTs] = useState<number | null>(null);
 
   useEffect(() => {
     if (quizState && !quizState.isCompleted) {
@@ -66,16 +85,52 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
       })),
       timeLeft: duration * 60,
       isCompleted: false,
+      questions: [],
+      mode: 'standard',
     };
     setQuizState(newState);
     localStorage.setItem(`quiz_${examName}_${quizType}`, JSON.stringify(newState));
+    setQuestionViewTs(Date.now());
+  };
+
+  const startQuizWithQuestions = ({ examName, quizType, questions, durationMin, mode = 'standard', subject }: { examName: string; quizType: 'topic' | 'subject' | 'full'; questions: QuizQuestion[]; durationMin: number; mode?: 'standard' | 'calibration' | 'adaptive'; subject?: string; }) => {
+    const newState: QuizState = {
+      examName,
+      quizType,
+      currentQuestion: 0,
+      answers: Array.from({ length: questions.length }, (_, i) => ({
+        questionId: i,
+        selectedAnswer: null,
+        markedForReview: false,
+      })),
+      timeLeft: durationMin * 60,
+      isCompleted: false,
+      questions,
+      mode,
+      subject,
+    };
+    setQuizState(newState);
+    localStorage.setItem(`quiz_${examName}_${quizType}`, JSON.stringify(newState));
+    setQuestionViewTs(Date.now());
   };
 
   const selectAnswer = (questionId: number, answerIndex: number) => {
     setQuizState(prev => {
       if (!prev) return prev;
       const newAnswers = [...prev.answers];
-      newAnswers[questionId] = { ...newAnswers[questionId], selectedAnswer: answerIndex };
+      
+      // Capture time for current question if not already set
+      let timeTakenSec = newAnswers[questionId]?.timeTakenSec;
+      if (questionViewTs && !timeTakenSec) {
+        timeTakenSec = Math.max(1, Math.round((Date.now() - questionViewTs) / 1000));
+      }
+      
+      newAnswers[questionId] = { 
+        ...newAnswers[questionId], 
+        selectedAnswer: answerIndex, 
+        timeTakenSec 
+      };
+      
       const newState = { ...prev, answers: newAnswers };
       localStorage.setItem(`quiz_${prev.examName}_${prev.quizType}`, JSON.stringify(newState));
       return newState;
@@ -99,28 +154,73 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
   const nextQuestion = () => {
     setQuizState(prev => {
       if (!prev || prev.currentQuestion >= prev.answers.length - 1) return prev;
-      return { ...prev, currentQuestion: prev.currentQuestion + 1 };
+      
+      // Save time for current question before moving
+      const newAnswers = [...prev.answers];
+      const currentIdx = prev.currentQuestion;
+      if (questionViewTs && !newAnswers[currentIdx]?.timeTakenSec) {
+        const elapsed = Math.max(1, Math.round((Date.now() - questionViewTs) / 1000));
+        newAnswers[currentIdx] = { ...newAnswers[currentIdx], timeTakenSec: elapsed };
+      }
+      
+      const next = { ...prev, currentQuestion: prev.currentQuestion + 1, answers: newAnswers };
+      localStorage.setItem(`quiz_${prev.examName}_${prev.quizType}`, JSON.stringify(next));
+      setQuestionViewTs(Date.now());
+      return next;
     });
   };
 
   const previousQuestion = () => {
     setQuizState(prev => {
       if (!prev || prev.currentQuestion <= 0) return prev;
-      return { ...prev, currentQuestion: prev.currentQuestion - 1 };
+      
+      // Save time for current question before moving
+      const newAnswers = [...prev.answers];
+      const currentIdx = prev.currentQuestion;
+      if (questionViewTs && !newAnswers[currentIdx]?.timeTakenSec) {
+        const elapsed = Math.max(1, Math.round((Date.now() - questionViewTs) / 1000));
+        newAnswers[currentIdx] = { ...newAnswers[currentIdx], timeTakenSec: elapsed };
+      }
+      
+      const next = { ...prev, currentQuestion: prev.currentQuestion - 1, answers: newAnswers };
+      localStorage.setItem(`quiz_${prev.examName}_${prev.quizType}`, JSON.stringify(next));
+      setQuestionViewTs(Date.now());
+      return next;
     });
   };
 
   const goToQuestion = (index: number) => {
     setQuizState(prev => {
       if (!prev) return prev;
-      return { ...prev, currentQuestion: index };
+      
+      // Save time for current question before jumping
+      const newAnswers = [...prev.answers];
+      const currentIdx = prev.currentQuestion;
+      if (questionViewTs && !newAnswers[currentIdx]?.timeTakenSec) {
+        const elapsed = Math.max(1, Math.round((Date.now() - questionViewTs) / 1000));
+        newAnswers[currentIdx] = { ...newAnswers[currentIdx], timeTakenSec: elapsed };
+      }
+      
+      const next = { ...prev, currentQuestion: index, answers: newAnswers };
+      localStorage.setItem(`quiz_${prev.examName}_${prev.quizType}`, JSON.stringify(next));
+      setQuestionViewTs(Date.now());
+      return next;
     });
   };
 
   const submitQuiz = () => {
     setQuizState(prev => {
       if (!prev) return prev;
-      const newState = { ...prev, isCompleted: true };
+      
+      // Save time for last question before submitting
+      const newAnswers = [...prev.answers];
+      const currentIdx = prev.currentQuestion;
+      if (questionViewTs && !newAnswers[currentIdx]?.timeTakenSec) {
+        const elapsed = Math.max(1, Math.round((Date.now() - questionViewTs) / 1000));
+        newAnswers[currentIdx] = { ...newAnswers[currentIdx], timeTakenSec: elapsed };
+      }
+      
+      const newState = { ...prev, answers: newAnswers, isCompleted: true };
       localStorage.setItem(`quiz_${prev.examName}_${prev.quizType}_completed`, JSON.stringify(newState));
       localStorage.removeItem(`quiz_${prev.examName}_${prev.quizType}`);
       return newState;
@@ -155,6 +255,7 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
       value={{
         quizState,
         startQuiz,
+        startQuizWithQuestions,
         selectAnswer,
         markForReview,
         nextQuestion,

@@ -8,9 +8,9 @@ export const HeroSection = () => {
       <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
       <div className="max-w-7xl mx-auto relative">
         <div className="text-center">
-          <Badge variant="secondary" className="mb-4 px-4 py-2 text-sm font-medium">
+          {/* <Badge variant="secondary" className="mb-4 px-4 py-2 text-sm font-medium">
             🎉 New GATE 2025 Course Available
-          </Badge>
+          </Badge> */}
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
             Master Your
             <span className="block bg-gradient-to-r from-yellow-300 to-white bg-clip-text text-transparent">
@@ -22,14 +22,9 @@ export const HeroSection = () => {
             Smart learning with AI-powered insights.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button size="lg" variant="default" className="bg-white text-primary hover:bg-white/90 shadow-strong">
-              Start Learning Now
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            <Button size="lg" variant="outline" className="border-white/80 text-white hover:bg-white hover:text-primary shadow-lg backdrop-blur-sm bg-white/10">
-              <Play className="mr-2 h-5 w-5" />
-              Watch Demo
-            </Button>
+            {/* Remove or comment out these buttons */}
+            {/* <Button>Watch Demo</Button> */}
+            {/* <Button>Start Learning</Button> */}
           </div>
         </div>
       </div>
